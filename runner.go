@@ -31,28 +31,36 @@ func generateTraffic(target *url.URL) {
 	for {
 		randomInt := RandInt(1, 1000)
 		time.Sleep(milliBetweenRequests * time.Millisecond)
-		// Append a random number on on the path section of the url.
+		// The test-service can also respond to urls with a number for the path.
+		// Append the random number to the path section of the url.
 		target.Path = fmt.Sprintf("%v", randomInt)
-		Get(target)
+		body, err := Get(target)
+		if err != nil {
+			log.Println(err)
+		} else {
+			if !strings.Contains(string(body), target.Path) {
+				log.Println("The response did not contain " + target.Path)
+			}
+		}
 	}
 }
 
-func Get(target *url.URL) {
+func Get(target *url.URL) ([]byte, error) {
 	log.Println(target)
 	// Make the GET request to the target.
 	response, err := http.Get(target.String())
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 	// Close the body once this variable gets out of scope.
 	defer response.Body.Close()
+	log.Println(response.Status)
+	// Read all the bytes from the response.
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println(err)
-	if !strings.Contains(string(body), target.Path) {
-		log.Println("Response body did not contain " + target.Path)
+		return nil, err
 	}
-	log.Printf("%s %d\n", response.Status, response.StatusCode)
+	return body, nil
 }
 
 func RandInt(min int, max int) int {
