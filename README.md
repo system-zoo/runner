@@ -39,3 +39,20 @@ The runner loops forever generating GET requests to the url + randomInt.
 
 It checks the response, logs the output code and looks for the random
 number in the response, logging an error if not found in the response.
+
+
+## Payload for elastic search
+
+        {
+           "containerid": "0b0c75dc3a5e",
+           "requestdate": "2015-06-21",
+           "requesttime": "01:56:59",
+           "containername": "hopeful_stallman",
+           "response": {
+              "request": 126,
+              "duration": 2500,
+              "response": 126,
+              "code": 500
+           }
+        }
+        
